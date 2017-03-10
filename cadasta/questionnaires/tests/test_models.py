@@ -1,3 +1,5 @@
+import pytest
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from organization.tests.factories import ProjectFactory
 from . import factories
@@ -33,6 +35,14 @@ class QuestionnaireTest(TestCase):
         assert questionnaire.version == 129839021903
         assert questionnaire.md5_hash == 'sakohjd89su90us9a0jd90sau90d'
 
+    def test_clean_invalid(self):
+        questionnaire = factories.QuestionnaireFactory.build(
+            title='<Name>',
+            project=ProjectFactory.create())
+
+        with pytest.raises(ValidationError):
+            questionnaire.clean_fields()
+
 
 class QuestionGroupTest(TestCase):
     def test_repr(self):
@@ -41,6 +51,15 @@ class QuestionGroupTest(TestCase):
             id='abc123', name='Group', questionnaire=questionnaire)
         assert repr(group) == ('<QuestionGroup id=abc123 name=Group '
                                'questionnaire=abc123>')
+
+    def test_clean_invalid(self):
+        questionnaire = factories.QuestionnaireFactory.create(id='abc123')
+        group = factories.QuestionGroupFactory.build(
+            name='<Name>',
+            questionnaire=questionnaire)
+
+        with pytest.raises(ValidationError):
+            group.clean_fields()
 
 
 class QuestionTest(TestCase):
@@ -65,6 +84,17 @@ class QuestionTest(TestCase):
         question = factories.QuestionFactory.create(type='IN')
         assert question.has_options is False
 
+    def test_clean_invalid(self):
+        questionnaire = factories.QuestionnaireFactory.create(
+            id='abc123')
+        group = factories.QuestionGroupFactory.create(id='abc123')
+        question = factories.QuestionFactory.build(name='<Name>',
+                                                   questionnaire=questionnaire,
+                                                   question_group=group)
+
+        with pytest.raises(ValidationError):
+            question.clean_fields()
+
 
 class QuestionOptionTest(TestCase):
     def test_repr(self):
@@ -73,3 +103,11 @@ class QuestionOptionTest(TestCase):
                                                  question=question)
         assert repr(option) == ('<QuestionOption id=abc123 name=Option '
                                 'question=abc123>')
+
+    def test_clean_invalid(self):
+        question = factories.QuestionFactory.create(id='abc123')
+        option = factories.QuestionOptionFactory.build(name='<Name>',
+                                                       question=question)
+
+        with pytest.raises(ValidationError):
+            option.clean_fields()

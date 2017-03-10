@@ -35,4 +35,7 @@ pattern = re.compile(".*[<>;\\\/].*")
 
 
 def sanitize_string(value):
+    if not value:
+        return True
+
     return not pattern.match(value)

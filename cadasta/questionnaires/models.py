@@ -1,7 +1,7 @@
 import hashlib
 from datetime import datetime
 from buckets.fields import S3FileField
-from core.models import RandomIDModel
+from core.models import RandomIDModel, SanitizeFieldsModel
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import get_language
@@ -39,7 +39,7 @@ class MultilingualLabelsMixin:
 
 
 @permissioned_model
-class Questionnaire(RandomIDModel):
+class Questionnaire(SanitizeFieldsModel, RandomIDModel):
     filename = models.CharField(max_length=100)
     title = models.CharField(max_length=500)
     id_string = models.CharField(max_length=50)
@@ -94,7 +94,8 @@ class Questionnaire(RandomIDModel):
         return super().save(*args, **kwargs)
 
 
-class QuestionGroup(MultilingualLabelsMixin, RandomIDModel):
+class QuestionGroup(SanitizeFieldsModel, MultilingualLabelsMixin,
+                    RandomIDModel):
     class Meta:
         ordering = ('index',)
 
@@ -119,7 +120,7 @@ class QuestionGroup(MultilingualLabelsMixin, RandomIDModel):
         return repr_string.format(obj=self)
 
 
-class Question(MultilingualLabelsMixin, RandomIDModel):
+class Question(SanitizeFieldsModel, MultilingualLabelsMixin, RandomIDModel):
     class Meta:
         ordering = ('index',)
 
@@ -180,7 +181,8 @@ class Question(MultilingualLabelsMixin, RandomIDModel):
         return self.type in ['S1', 'SM']
 
 
-class QuestionOption(MultilingualLabelsMixin, RandomIDModel):
+class QuestionOption(SanitizeFieldsModel, MultilingualLabelsMixin,
+                     RandomIDModel):
     class Meta:
         ordering = ('index',)
 

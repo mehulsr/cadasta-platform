@@ -1,6 +1,6 @@
 """Party models."""
 
-from core.models import RandomIDModel
+from core.models import RandomIDModel, SanitizeFieldsModel
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.gis.db import models
@@ -26,7 +26,7 @@ PERMISSIONS_DIR = settings.BASE_DIR + '/permissions/'
 
 @fix_model_for_attributes
 @permissioned_model
-class Party(ResourceModelMixin, RandomIDModel):
+class Party(SanitizeFieldsModel, ResourceModelMixin, RandomIDModel):
     """
     Party model.
 
@@ -330,7 +330,7 @@ class TenureRelationship(ResourceModelMixin, RandomIDModel):
         return _(self.tenure_type.label)
 
 
-class TenureRelationshipType(models.Model):
+class TenureRelationshipType(SanitizeFieldsModel, models.Model):
     """Defines allowable tenure types."""
 
     id = models.CharField(max_length=2, primary_key=True)

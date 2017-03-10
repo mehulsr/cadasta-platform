@@ -166,7 +166,8 @@ def remove_org_permissions(sender, instance, **kwargs):
 
 
 @permissioned_model
-class Project(ResourceModelMixin, SlugModel, RandomIDModel):
+class Project(SanitizeFieldsModel, ResourceModelMixin, SlugModel,
+              RandomIDModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=50, unique=True, null=True)
     organization = models.ForeignKey(Organization, related_name='projects')

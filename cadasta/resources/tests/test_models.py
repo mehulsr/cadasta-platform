@@ -6,6 +6,7 @@ from core.tests.utils.cases import UserTestCase, FileStorageTestCase
 from core.tests.utils.files import make_dirs  # noqa
 from django.conf import settings
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
 from accounts.tests.factories import UserFactory
@@ -242,6 +243,12 @@ class ResourceTest(UserTestCase, FileStorageTestCase, TestCase):
         assert str(e.value) == _('Invalid GPX file')
         assert Resource.objects.all().count() == 0
 
+    def test_clean_invalid(self):
+        resource = ResourceFactory.build(name='<Name>')
+
+        with pytest.raises(ValidationError):
+            resource.clean_fields()
+
 
 class SpatialResourceTest(UserTestCase, FileStorageTestCase, TestCase):
     def test_repr(self):
@@ -257,3 +264,9 @@ class SpatialResourceTest(UserTestCase, FileStorageTestCase, TestCase):
         spatial_resource = SpatialResourceFactory.create(resource=resource)
         assert spatial_resource.project.pk == resource.project.pk
         assert spatial_resource.archived == resource.archived
+
+    def test_clean_invalid(self):
+        resource = SpatialResourceFactory.build(name='<Name>')
+
+        with pytest.raises(ValidationError):
+            resource.clean_fields()

@@ -10,7 +10,7 @@ from accounts.tests.factories import UserFactory
 from geography import load as load_countries
 from spatial.tests.factories import SpatialUnitFactory
 from .factories import OrganizationFactory, ProjectFactory
-from ..models import Organization, OrganizationRole, ProjectRole
+from ..models import OrganizationRole, ProjectRole
 
 PERMISSIONS_DIR = settings.BASE_DIR + '/permissions/'
 
@@ -33,12 +33,9 @@ class OrganizationTest(TestCase):
         assert type(org.id) is not int
 
     def test_clean_invalid(self):
-        org = Organization(id='abd',
-                           name='<html>',
-                           slug='html',
-                           description='<description>',
-                           urls=['http://example.com'],
-                           logo='http://example.com')
+        org = OrganizationFactory.build(
+            name='<html>',
+            description='<description>')
 
         with pytest.raises(ValidationError):
             org.clean_fields()
@@ -193,6 +190,14 @@ class ProjectTest(TestCase):
         project = ProjectFactory.create()
         SpatialUnitFactory.create(project=project)
         assert project.has_records is True
+
+    def test_clean_invalid(self):
+        prj = ProjectFactory.build(
+            name='<html>',
+            description='<description>')
+
+        with pytest.raises(ValidationError):
+            prj.clean_fields()
 
 
 class ProjectRoleTest(UserTestCase, TestCase):

@@ -4,6 +4,7 @@ import pytest
 
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from jsonattrs.models import Attribute, AttributeType, Schema
 from core.tests.utils.cases import UserTestCase
@@ -106,6 +107,13 @@ class PartyTest(UserTestCase, TestCase):
         assert not ContentObject.objects.filter(
             object_id=party.id, resource=resource).exists()
         assert Party.objects.all().count() == 0
+
+    def test_clean_invalid(self):
+        party = PartyFactory.build(
+            name='<html>')
+
+        with pytest.raises(ValidationError):
+            party.clean_fields()
 
 
 class PartyRelationshipTest(UserTestCase, TestCase):
@@ -327,6 +335,12 @@ class TenureRelationshipTypeTest(UserTestCase, TestCase):
         assert 18 == len(tenure_types)
         freehold = TenureRelationshipType.objects.get(id='FH')
         assert freehold.label == 'Freehold'
+
+    def test_clean_invalid(self):
+        tenure_type = TenureRelationshipType(id='FH', label='<Freehold>')
+
+        with pytest.raises(ValidationError):
+            tenure_type.clean_fields()
 
 
 class PartyTenureRelationshipsTest(UserTestCase, TestCase):

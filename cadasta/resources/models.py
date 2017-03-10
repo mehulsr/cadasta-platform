@@ -3,7 +3,7 @@ from datetime import datetime
 
 import magic
 from buckets.fields import S3FileField
-from core.models import ID_FIELD_LENGTH, RandomIDModel
+from core.models import ID_FIELD_LENGTH, RandomIDModel, SanitizeFieldsModel
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -32,7 +32,7 @@ GPX_MIME_TYPES = ('application/xml', 'text/xml', 'application/gpx+xml')
 
 
 @permissioned_model
-class Resource(RandomIDModel):
+class Resource(SanitizeFieldsModel, RandomIDModel):
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     file = S3FileField(upload_to='resources', accepted_types=ACCEPTED_TYPES)
@@ -228,7 +228,7 @@ class ContentObject(RandomIDModel):
 
 
 @permissioned_model
-class SpatialResource(RandomIDModel):
+class SpatialResource(SanitizeFieldsModel, RandomIDModel):
 
     class Meta:
         ordering = ('name',)
