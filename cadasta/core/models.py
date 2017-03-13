@@ -73,10 +73,10 @@ class SanitizeFieldsModel:
             errors = e.error_dict
 
         for f in self._meta.fields:
-            # print(f.name, f.options)
             if (f.name in exclude or
                     f.name in self.INGNORED_NAMES or
-                    type(f) not in self.CHECK_FIELDS):
+                    type(f) not in self.CHECK_FIELDS or
+                    len(f.choices)):
                 continue
 
             raw_value = getattr(self, f.attname)
