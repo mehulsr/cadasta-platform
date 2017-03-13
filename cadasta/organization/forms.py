@@ -125,6 +125,9 @@ class OrganizationForm(forms.ModelForm):
         model = Organization
         fields = ['name', 'description', 'urls', 'contacts', 'access']
 
+    class Media:
+        js = ('js/file-upload.js', 'js/sanitize.js')
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -261,7 +264,7 @@ class ProjectAddExtents(forms.ModelForm):
 class ProjectAddDetails(SuperUserCheck, forms.Form):
 
     class Media:
-        js = ('js/file-upload.js',)
+        js = ('js/file-upload.js', 'js/sanitize.js')
 
     organization = forms.ChoiceField()
     name = forms.CharField(max_length=100)
@@ -339,7 +342,7 @@ class ProjectEditDetails(forms.ModelForm):
     contacts = org_fields.ContactsField(form=ContactsForm, required=False)
 
     class Media:
-        js = ('js/file-upload.js',)
+        js = ('js/file-upload.js', 'js/sanitize.js')
 
     class Meta:
         model = Project
@@ -516,6 +519,9 @@ class SelectImportForm(forms.Form):
     TYPE_CHOICES = (('xls', 'XLS'), ('shp', 'SHP'),
                     ('csv', 'CSV'))
     ENTITY_TYPE_CHOICES = (('SU', 'Locations'), ('PT', 'Parties'))
+
+    class Media:
+        js = ('js/sanitize.js')
 
     name = forms.CharField(required=True, max_length=200)
     type = forms.ChoiceField(

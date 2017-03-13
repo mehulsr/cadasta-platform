@@ -5,7 +5,7 @@ from .fields import ResourceField
 
 class ResourceForm(forms.ModelForm):
     class Media:
-        js = ('js/file-upload.js',)
+        js = ('js/file-upload.js',  'js/sanitize.js', )
 
     class Meta:
         model = Resource

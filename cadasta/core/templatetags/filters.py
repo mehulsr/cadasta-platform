@@ -34,7 +34,5 @@ def display_choice_verbose(field):
 @register.filter(name='set_parsley_required')
 def set_parsley_required(field):
     if field.field.required:
-        field.field.widget.attrs = {
-            'data-parsley-required': 'true'
-        }
+        field.field.widget.attrs['data-parsley-required'] = 'true'
     return field

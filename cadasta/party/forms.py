@@ -12,7 +12,7 @@ class PartyForm(AttributeModelForm):
         fields = ['name', 'type']
 
     class Media:
-        js = ('/static/js/party_attrs.js',)
+        js = ('/static/js/party_attrs.js',  'js/sanitize.js')
 
     def __init__(self, project, *args, **kwargs):
         super().__init__(*args, **kwargs)
