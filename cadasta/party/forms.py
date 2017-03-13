@@ -50,6 +50,9 @@ class TenureRelationshipEditForm(AttributeModelForm):
         model = TenureRelationship
         fields = ['tenure_type']
 
+    class Media:
+        js = ('js/sanitize.js', )
+
     def __init__(self, project=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.project = project

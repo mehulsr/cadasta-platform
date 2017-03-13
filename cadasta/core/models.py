@@ -58,9 +58,11 @@ class SlugModel:
         return super().save(*args, **kwargs)
 
 
+CHECK_FIELDS = (models.TextField, models.CharField)
+
+
 class SanitizeFieldsModel:
     INGNORED_NAMES = ['id', 'slug']
-    CHECK_FIELDS = (models.TextField, models.CharField)
 
     def clean_fields(self, exclude=None):
         errors = {}
@@ -75,7 +77,7 @@ class SanitizeFieldsModel:
         for f in self._meta.fields:
             if (f.name in exclude or
                     f.name in self.INGNORED_NAMES or
-                    type(f) not in self.CHECK_FIELDS or
+                    type(f) not in CHECK_FIELDS or
                     len(f.choices)):
                 continue
 
